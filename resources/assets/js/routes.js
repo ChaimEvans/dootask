@@ -68,6 +68,11 @@ export default [
                 path: 'file',
                 component: () => import('./pages/manage/file.vue'),
             },
+            {
+                name: 'manage-svn',
+                path: 'svn',
+                component: () => import('./pages/manage/svn.vue'),
+            },
         ]
     },
     {

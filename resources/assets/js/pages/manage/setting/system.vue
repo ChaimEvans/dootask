@@ -13,6 +13,9 @@
             <TabPane :label="$L('邮件设置')" name="emailSetting">
                 <SystemEmailSetting/>
             </TabPane>
+            <TabPane :label="$L('SVN仓库')" name="SVNSetting">
+                <SVNSetting/>
+            </TabPane>
         </Tabs>
     </div>
 </template>
@@ -22,9 +25,10 @@ import SystemSetting from "./components/SystemSetting";
 import SystemTaskPriority from "./components/SystemTaskPriority";
 import SystemColumnTemplate from "./components/SystemColumnTemplate";
 import SystemEmailSetting from "./components/SystemEmailSetting";
+import SVNSetting from "./components/SVNSetting";
 
 export default {
-    components: {SystemColumnTemplate, SystemTaskPriority, SystemSetting, SystemEmailSetting},
+    components: {SystemColumnTemplate, SystemTaskPriority, SystemSetting, SystemEmailSetting, SVNSetting},
     data() {
         return {
             tabAction: 'setting',

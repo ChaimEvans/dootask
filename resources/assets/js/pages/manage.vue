@@ -153,6 +153,10 @@
                     <i class="taskfont">&#xe6f3;</i>
                     <div class="menu-title">{{$L('文件')}}</div>
                 </li>
+                <li @click="toggleRoute('svn')" :class="classNameRoute('svn')">
+                    <i class="taskfont">&#xe6e7;</i>
+                    <div class="menu-title">{{$L('SVN仓库')}}</div>
+                </li>
                 <li ref="projectWrapper" class="menu-project">
                     <ul :class="overlayClass" @scroll="handleClickTopOperateOutside">
                         <li

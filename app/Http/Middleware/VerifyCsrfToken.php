@@ -53,5 +53,12 @@ class VerifyCsrfToken extends Middleware
 
         // 发布桌面端
         'desktop/publish/',
+
+        // SVN仓库设置
+        'api/svn/add',
+        'api/svn/update',
+
+        // 测试
+        'api/svn/test',
     ];
 }
