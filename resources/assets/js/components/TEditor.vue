@@ -55,6 +55,19 @@
     </div>
 </template>
 
+<style>
+
+/* 适配手机 */
+div.teditor-wrapper {
+    width: 100% !important;
+}
+@media only screen and (max-width: 767px){
+    div.tox-sidebar-wrap {
+        margin: 12px 0px !important;
+    }
+}
+</style>
+
 <script>
     import tinymce from 'tinymce/tinymce';
     import ImgUpload from "./ImgUpload";
