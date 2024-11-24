@@ -20,6 +20,7 @@ class CreateSVNSTable extends Migration
             $table->string('url_lan')->comment('内网URL');
             $table->string('get_info_user')->comment('用于读取信息的用户');
             $table->string('get_info_user_passwd')->comment('用于读取信息的用户的密码');
+            $table->boolean('get_info_use_wan')->default(false)->comment('使用外网URL获取信息(默认否)');
             $table->json('commits_info')->nullable()->comment('提交信息');
             $table->timestamps();
         });

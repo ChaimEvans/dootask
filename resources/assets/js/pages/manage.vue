@@ -140,9 +140,9 @@
                     <Badge v-else-if="dashboardTask.today.length > 0" class="menu-badge" type="info" :count="dashboardTask.today.length"/>
                     <Badge v-else-if="dashboardTask.all.length > 0" class="menu-badge" type="primary" :count="dashboardTask.all.length"/>
                 </li>
-                <li @click="toggleRoute('calendar')" :class="classNameRoute('calendar')">
-                    <i class="taskfont">&#xe6f5;</i>
-                    <div class="menu-title">{{$L('日历')}}</div>
+                <li @click="toggleRoute('svn')" :class="classNameRoute('svn')">
+                    <i class="taskfont">&#xe6e7;</i>
+                    <div class="menu-title">{{$L('SVN仓库')}}</div>
                 </li>
                 <li @click="toggleRoute('messenger')" :class="classNameRoute('messenger')">
                     <i class="taskfont">&#xe6eb;</i>
@@ -153,10 +153,10 @@
                     <i class="taskfont">&#xe6f3;</i>
                     <div class="menu-title">{{$L('文件')}}</div>
                 </li>
-                <li @click="toggleRoute('svn')" :class="classNameRoute('svn')">
-                    <i class="taskfont">&#xe6e7;</i>
-                    <div class="menu-title">{{$L('SVN仓库')}}</div>
-                </li>
+                <!-- <li @click="toggleRoute('calendar')" :class="classNameRoute('calendar')">
+                    <i class="taskfont">&#xe6f5;</i>
+                    <div class="menu-title">{{$L('日历')}}</div>
+                </li> -->
                 <li ref="projectWrapper" class="menu-project">
                     <ul :class="overlayClass" @scroll="handleClickTopOperateOutside">
                         <li
@@ -208,7 +208,7 @@
                 :class="{loading:projectKeyLoading > 0}">
                 <Input prefix="ios-search" v-model="projectKeyValue" :placeholder="$L('共' + projectTotal + '个项目，搜索...')" clearable />
             </div>
-            <ButtonGroup class="manage-box-new-group">
+            <ButtonGroup v-if="userIsAdmin" class="manage-box-new-group">
                 <Button class="manage-box-new" type="primary" icon="md-add" @click="onAddShow">{{$L('新建项目')}}</Button>
                 <Dropdown @on-click="onAddTask(0)">
                     <Button type="primary">

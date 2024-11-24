@@ -16,6 +16,7 @@
                         <div><Icon class="information" type="ios-information-circle-outline" /> {{$L('密码')}}</div>
                     </ETooltip>
                 </Col>
+                <Col span="2">{{$L('使用外网URL获取信息')}}</Col>
             </Row>
             <Row v-for="(item, index) in formDatum" :key="index" class="setting-color">
                 <Col span="0">
@@ -37,7 +38,10 @@
                     <Input v-model="item.get_info_user_passwd" :placeholder="$L('请输入密码')" clearable/>
                 </Col>
                 <Col span="2">
-                    <Button shape="circle" icon="md-remove" @click="delDatum(index)"></Button>
+                    <Checkbox v-model="item.get_info_use_wan" />
+                </Col>
+                <Col span="2">
+                    <Button shape="circle" icon="md-remove" @click="delDatum(index, item.id)"></Button>
                 </Col>
             </Row>
             <Button type="default" icon="md-add" @click="addDatum">{{$L('添加仓库')}}</Button>
@@ -57,13 +61,16 @@ export default {
         return {
             formDatum: [],
 
+            deletedID: [],
+
             nullDatum: {
                 'id': -1,
                 'name': '',
                 'url_wan': '',
                 'url_lan': '',
                 'get_info_user': '',
-                'get_info_user_passwd': ''
+                'get_info_user_passwd': '',
+                'get_info_use_wan': false
             }
         }
     },
@@ -84,6 +91,7 @@ export default {
             }).catch(({msg}) => {
                 $A.modalError(msg);
             });
+            this.deletedID = [];
         },
 
         submitForm() {
@@ -129,13 +137,31 @@ export default {
                     });
                 }
             });
+            let total_requests_num_remove = 0;
+            this.deletedID.forEach(item => {
+                total_requests_num_remove++;
+                // 删除
+                this.$store.dispatch("call", {
+                    url: 'svn/remove?id=' + item,
+                }).then(_=>{
+                    total_requests_num_remove--;
+                    if(total_requests_num_remove <= 0) {
+                        $A.messageSuccess('删除成功');
+                    }
+                }).catch(({msg}) => {
+                    $A.modalError(msg);
+                });
+            });
         },
 
         addDatum() {
             this.formDatum.push($A.cloneJSON(this.nullDatum));
         },
 
-        delDatum(key) {
+        delDatum(key, id) {
+            if (id > 0) {
+                this.deletedID.push(id);
+            }
             this.formDatum.splice(key, 1);
         },
     }

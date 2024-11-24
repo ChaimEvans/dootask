@@ -3062,4 +3062,71 @@ class Base
             throw new ApiException($validator->errors()->first());
         }
     }
+
+    /**
+     * 文本转布尔
+     * @param $str
+     * @return ?bool 成功返回布尔，不成功返回null
+     * @author Chaim
+     */
+    public static function strToBoolean($str)
+    {
+        if (is_null($str)) {
+            return null;
+        }
+        $str_len = strlen($str);
+        if (!($str_len == 4 || $str_len == 5)) {
+            return null;
+        }
+        $str = strtolower($str);
+        if ($str == "true") {
+            return true;
+        } elseif ($str == "false") {
+            return false;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 请求数据转布尔
+     * @param $value
+     * @return ?bool 成功返回布尔，不成功返回null
+     * @author Chaim
+     */
+    public static function requestDataValueToBoolean($value)
+    {
+        if (is_null($value)) {
+            return null;
+        }
+        if (is_bool($value)) {
+            return $value;
+        }
+        if (is_string($value)) {
+            $str_len = strlen($value);
+            if ($str_len == 0) {
+                return null;
+            } elseif ($str_len == 4 || $str_len == 5) {
+                $value = strtolower($value);
+                if ($value == "true") {
+                    return true;
+                } elseif ($value == "false") {
+                    return false;
+                } else {
+                    return null;
+                }
+            }elseif ($str_len == 1) {
+                $value = (int)$value;
+            }
+        }
+        if (is_numeric($value)) {
+            if ($value == 0) {
+                return false;
+            } elseif ($value == 1) {
+                return true;
+            } else {
+                return null;
+            }
+        }
+    }
 }

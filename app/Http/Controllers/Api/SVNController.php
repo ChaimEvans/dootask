@@ -73,9 +73,15 @@ class SVNController extends AbstractController
             return Base::retError('非法数据');
         }
 
-        $data = Request::only(['name', 'url_wan', 'url_lan', 'get_info_user', 'get_info_user_passwd']);
-        SVN::create($data);
-        return Base::retSuccess('suucess');
+        $data = Request::only(['name', 'url_wan', 'url_lan', 'get_info_user', 'get_info_user_passwd', 'get_info_use_wan']);
+        $get_info_use_wan = Base::requestDataValueToBoolean($data['get_info_use_wan']);
+        if (is_null($get_info_use_wan)) {
+            unset($data['get_info_use_wan']);
+        } else {
+            $data['get_info_use_wan'] = $get_info_use_wan;
+        }
+        $svn = SVN::create($data);
+        return Base::retSuccess('suucess', [$data, $svn]);
     }
 
     /**
@@ -118,14 +124,16 @@ class SVNController extends AbstractController
         if (!$svn) {
             return Base::retError('未查询到该记录');
         }
-
-        $data = Request::only(['name', 'url_wan', 'url_lan', 'get_info_user']);
-        $get_info_user_passwd = Request::input('get_info_user_passwd');
-        if ($get_info_user_passwd) {
-            $data['get_info_user_passwd'] = $get_info_user_passwd;
+        
+        $data = Request::only(['name', 'url_wan', 'url_lan', 'get_info_user', 'get_info_user_passwd', 'get_info_use_wan']);
+        $get_info_use_wan = Base::requestDataValueToBoolean($data['get_info_use_wan']);
+        if (is_null($get_info_use_wan)) {
+            unset($data['get_info_use_wan']);
+        } else {
+            $data['get_info_use_wan'] = $get_info_use_wan;
         }
         $svn->update($data);
-        return Base::retSuccess('suucess');
+        return Base::retSuccess('suucess', [$data, $svn]);
     }
 
     /**
@@ -200,7 +208,7 @@ class SVNController extends AbstractController
     public function lists_info()
     {
         User::auth();
-        return Base::retSuccess('success', SVN::get(['id', 'name', 'url_wan', 'url_lan', 'get_info_user']));
+        return Base::retSuccess('success', SVN::get(['id', 'name', 'url_wan', 'url_lan', 'get_info_user', 'get_info_use_wan']));
     }
 
     /**

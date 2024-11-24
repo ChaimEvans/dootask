@@ -19,13 +19,23 @@
             </ul>
             <div class="dashboard-list overlay-y">
                 <div class="dashboard-title">
-                    密钥信息
+                    登录信息
                     <Button style="padding-left: 10px;" shape="circle" icon="md-eye" @click="GetSecretKey"></Button>
                 </div>
                 <ul class="dashboard-ul">
+                    <li @click="CopyText(userInfo.email)">
+                        <div class="item-title">
+                            登录账户 &nbsp;&nbsp;
+                            <span>{{ userInfo.email }}</span> 
+                        </div>
+                        <div class="item-icon">
+                            <i class="taskfont">&#xe721;</i>
+                            <em>点击复制</em>
+                        </div>
+                    </li>
                     <li @click="CopySecretKey">
                         <div class="item-title">
-                            我的密钥 &nbsp;&nbsp;
+                            登录密钥 &nbsp;&nbsp;
                             <span class="start">{{ SecretKey ? SecretKey : "********" }}</span> 
                         </div>
                         <div class="item-icon">
@@ -127,7 +137,7 @@ export default {
     },
 
     computed: {
-        ...mapState(['userId', 'userToken', 'userIsAdmin', 'userInfo', 'files', 'wsOpenNum']),
+        ...mapState(['userIsAdmin', 'userInfo']),
     },
 
     methods: {
