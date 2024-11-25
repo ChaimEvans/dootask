@@ -13,14 +13,14 @@
             <ul class="dashboard-block">
                 <li v-for="repo in RepoList" :key="repo.id" @click="SelectRepo(repo.id)">
                     <div class="block-svn-name">{{ repo.name }}</div>
-                    <div class="block-title">今日提交：{{ repo.info ? repo.info.commits_today : -1 }}</div>
-                    <div class="block-title">总提交量：{{ repo.info ? repo.info.commits_total : -1 }}</div>
+                    <div class="block-title">今日提交：{{ repo.revision - repo.yesterday_revision }}</div>
+                    <div class="block-title">当前版本：{{ repo.revision }}</div>
                 </li>
             </ul>
             <div class="dashboard-list overlay-y">
                 <div class="dashboard-title">
                     登录信息
-                    <Button style="padding-left: 10px;" shape="circle" icon="md-eye" @click="GetSecretKey"></Button>
+                    <Button style="margin-left: 10px;" shape="circle" icon="md-eye" @click="GetSecretKey"></Button>
                 </div>
                 <ul class="dashboard-ul">
                     <li @click="CopyText(userInfo.email)">
@@ -45,25 +45,37 @@
                     </li>
                 </ul>
                 <div class="dashboard-title">仓库信息</div>
-                <ul v-if="RepoSelectedID > 0" class="dashboard-ul">
-                    <li @click="CopyText(RepoWanURL)">
+                <ul v-if="RepoSelected != undefined" class="dashboard-ul">
+                    <li @click="CopyText(RepoSelected['url_wan'])">
                         <div class="item-title">
                             仓库URL &nbsp;&nbsp;
-                            <span class="repo-url">{{ RepoWanURL }}</span> 
+                            <span>{{ RepoSelected['url_wan'] }}</span> 
                         </div>
                         <div class="item-icon">
                             <i class="taskfont">&#xe721;</i>
                             <em>点击复制</em>
                         </div>
                     </li>
-                    <li @click="CopyText(RepoLanURL)">
+                    <li @click="CopyText(RepoSelected['url_lan'])">
                         <div class="item-title">
                             内网URL &nbsp;&nbsp;
-                            <span class="repo-url">{{ RepoLanURL }}</span> 
+                            <span>{{ RepoSelected['url_lan'] }}</span> 
                         </div>
                         <div class="item-icon">
                             <i class="taskfont">&#xe721;</i>
                             <em>点击复制</em>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-title">
+                            最近修改者 &nbsp;&nbsp;
+                            <span>{{ RepoSelected['last_changed_author'] }}</span> 
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-title">
+                            最近修改时间 &nbsp;&nbsp;
+                            <span>{{ RepoSelected['last_changed_date'] }}</span> 
                         </div>
                     </li>
                 </ul>
@@ -71,7 +83,7 @@
                     <div style="color: gray; font-size: small;">选择仓库以显示信息</div>
                 </ul>
                 <div class="dashboard-title">仓库日志</div>
-                <ul v-if="RepoSelectedID > 0" class="dashboard-ul">
+                <ul v-if="RepoSelected != undefined" class="dashboard-ul">
                     <!-- TODO --> 未实现
                     <li v-for="log in RepoLogs" :key="log.version">
                         <div class="item-title">
@@ -106,7 +118,7 @@
     line-height: 2em;
 }
 @media only screen and (max-width: 767px){
-    .repo-url {
+    .item-title>span {
         display: block !important;
     }
 }
@@ -124,7 +136,7 @@ export default {
     data() {
         return {
             RepoList: [],
-            RepoSelectedID: -1,
+            RepoSelected: undefined,
             RepoWanURL: "",
             RepoLanURL: "",
             SecretKey: "",
@@ -153,7 +165,7 @@ export default {
 
         RefreshRepoList() {
             this.$store.dispatch("call", {
-                url: 'svn/lists'
+                url: 'svn/lists_info'
             }).then(({data}) => {
                 this.RepoList = data;
             }).catch(({msg}) => {
@@ -162,18 +174,8 @@ export default {
         },
 
         SelectRepo(id) {
-            if(this.RepoSelectedID == id) {
-                return;
-            }
-            this.RepoSelectedID = id;
-            this.RepoLogs = [];
-            this.$store.dispatch("call", {
-                url: 'svn/info?id=' + id,
-            }).then(({data}) => {
-                this.RepoWanURL = data.url_wan;
-                this.RepoLanURL = data.url_lan;
-            }).catch(({msg}) => {
-                $A.modalError(msg);
+            this.RepoList.forEach(repo => {
+                (repo['id'] === id) && (this.RepoSelected = repo);
             });
         },
 

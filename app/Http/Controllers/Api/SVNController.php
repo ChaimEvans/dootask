@@ -22,19 +22,12 @@ class SVNController extends AbstractController
      *
      * @apiSuccess {Number} ret     返回状态码（1正确、0错误）
      * @apiSuccess {String} msg     返回信息（错误描述）
-     * @apiSuccess {Object} data    返回数据 [{'id': id, 'name': name, 'info': commits_info}]
+     * @apiSuccess {Object} data    返回数据 [{'id': id, 'name': name}]
      */
     public function lists()
     {
         User::auth();
-        $data = SVN::get(['id', 'name', 'commits_info'])->map(function ($_d) {
-            return [
-                'id' => $_d->id,
-                'name' => $_d->name,
-                'info' => $_d->commits_info,
-            ];
-        });
-        return Base::retSuccess('success', $data);
+        return Base::retSuccess('success', SVN::get(['id', 'name']));
     }
 
 
@@ -124,7 +117,7 @@ class SVNController extends AbstractController
         if (!$svn) {
             return Base::retError('未查询到该记录');
         }
-        
+
         $data = Request::only(['name', 'url_wan', 'url_lan', 'get_info_user', 'get_info_user_passwd', 'get_info_use_wan']);
         $get_info_use_wan = Base::requestDataValueToBoolean($data['get_info_use_wan']);
         if (is_null($get_info_use_wan)) {
@@ -208,7 +201,7 @@ class SVNController extends AbstractController
     public function lists_info()
     {
         User::auth();
-        return Base::retSuccess('success', SVN::get(['id', 'name', 'url_wan', 'url_lan', 'get_info_user', 'get_info_use_wan']));
+        return Base::retSuccess('success', SVN::all());
     }
 
     /**
@@ -230,8 +223,22 @@ class SVNController extends AbstractController
     }
 
 
-    public function test()
+    /**
+     * @api {get} api/svn/update_info          08. 手动更新仓库信息
+     *
+     * @apiDescription 需要token身份
+     * @apiVersion 1.0.0
+     * @apiGroup svn
+     * @apiName update_info
+     *
+     * @apiSuccess {Number} ret     返回状态码（1正确、0错误）
+     * @apiSuccess {String} msg     返回信息（错误描述）
+     * @apiSuccess {Object} data    返回数据
+     */
+    public function update_info()
     {
-        return Request::all();
+        User::auth();
+        SVN::update_info();
+        return Base::retSuccess("ok");
     }
 }

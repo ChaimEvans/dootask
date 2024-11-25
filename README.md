@@ -1,3 +1,12 @@
+# 团队自用
+> 原始项目：https://github.com/kuaifan/dootask
+
+1. 添加SVN仓库功能
+2. 修复部分页面移动端显示不正确
+3. 日历板块已关闭
+4. 非管理员无创建项目权限
+
+
 # Install (Docker)
 
 English | **[中文文档](./README_CN.md)**

@@ -5,6 +5,8 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+use App\Models\SVN;
+
 class Kernel extends ConsoleKernel
 {
     /**
@@ -25,6 +27,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+
+        $schedule->call(function (){
+            SVN::update_info();
+        })->everyThirtyMinutes();
+
+        $schedule->call(function (){
+            SVN::daily_process();
+        })->daily();
     }
 
     /**

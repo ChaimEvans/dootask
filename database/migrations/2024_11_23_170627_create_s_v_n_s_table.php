@@ -21,7 +21,11 @@ class CreateSVNSTable extends Migration
             $table->string('get_info_user')->comment('用于读取信息的用户');
             $table->string('get_info_user_passwd')->comment('用于读取信息的用户的密码');
             $table->boolean('get_info_use_wan')->default(false)->comment('使用外网URL获取信息(默认否)');
-            $table->json('commits_info')->nullable()->comment('提交信息');
+            $table->integer('info_update_timestamps')->default(946656000)->comment('info更新时间戳');
+            $table->integer('revision')->default(0)->comment('版本号');
+            $table->string('last_changed_author')->default('')->comment('最近的修改者');
+            $table->string('last_changed_date')->default('')->comment('最近修改时间');
+            $table->integer('yesterday_revision')->default(0)->comment('昨日版本号');
             $table->timestamps();
         });
     }
