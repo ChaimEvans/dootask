@@ -26,6 +26,14 @@ class SVN extends AbstractModel
     ];
 
     /**
+     * 计算SVN密钥
+     */
+    public static function calculate_key($passwd_in_db)
+    {
+	return Base::md52($passwd_in_db, 'svn');
+    }
+
+    /**
      * 更新所有仓库信息
      */
     public static function update_info()

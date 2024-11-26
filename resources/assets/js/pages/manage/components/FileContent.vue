@@ -45,7 +45,7 @@
                 </Dropdown>
                 <Button v-if="!file.only_view" :disabled="equalContent" :loading="loadIng > 0" class="header-button" size="small" type="primary" @click="handleClick('save')">{{$L('保存')}}</Button>
             </div>
-            <div v-if="contentDetail" class="content-body">
+            <div v-if="contentDetail" class="content-body" style="min-width: unset;">
                 <template v-if="file.type=='document'">
                     <MDEditor v-if="contentDetail.type=='md'" v-model="contentDetail.content" height="100%"/>
                     <TEditor v-else v-model="contentDetail.content" height="100%" @editorSave="handleClick('saveBefore')"/>

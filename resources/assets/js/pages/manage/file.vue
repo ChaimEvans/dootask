@@ -7,7 +7,7 @@
             <div class="file-head">
                 <div class="file-nav">
                     <h1>{{$L('文件')}}</h1>
-                    <div v-if="loadIng == 0" class="file-refresh" @click="getFileList"><i class="taskfont">&#xe6ae;</i></div>
+                    <div v-if="loadIng == 0" class="file-refresh" style="display: block;"@click="getFileList"><i class="taskfont">&#xe6ae;</i></div>
                 </div>
                 <div v-if="uploadList.length > 0" class="file-status" @click="uploadShow=true">
                     <Loading v-if="uploadList.find(({status}) => status !== 'finished')"/>
@@ -349,6 +349,14 @@
         </Modal>
     </div>
 </template>
+
+<style>
+@media only screen and (max-width: 767px){
+    .ivu-table-row * {
+        user-select: none;
+    }
+}
+</style>
 
 <script>
 import Vue from 'vue'

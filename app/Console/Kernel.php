@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function (){
             SVN::daily_process();
-        })->daily();
+        })->dailyAt('00:00');
     }
 
     /**

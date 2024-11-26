@@ -32,7 +32,7 @@ class SVNController extends AbstractController
 
 
     /**
-     * @api {get} api/svn/add          02. 添加一个SVN记录
+     * @api {get} api/svn/add          02. 添加一个SVN记录（限管理员）
      *
      * @apiDescription 需要token身份
      * @apiVersion 1.0.0
@@ -52,7 +52,7 @@ class SVNController extends AbstractController
      */
     public function add()
     {
-        User::auth();
+        User::auth('admin');
 
         $validator = Validator::make(Request::all(), [
             'name' => 'required',
@@ -78,7 +78,7 @@ class SVNController extends AbstractController
     }
 
     /**
-     * @api {get} api/svn/update          03. 更新SVN记录
+     * @api {get} api/svn/update          03. 更新SVN记录（限管理员）
      *
      * @apiDescription 需要token身份
      * @apiVersion 1.0.0
@@ -99,8 +99,8 @@ class SVNController extends AbstractController
      */
     public function update()
     {
-        User::auth();
-
+        User::auth('admin');
+        
         $validator = Validator::make(Request::all(), [
             'id' => ['required', 'regex:/[0-9]+/'],
             'name' => 'required',
@@ -130,7 +130,7 @@ class SVNController extends AbstractController
     }
 
     /**
-     * @api {get} api/svn/remove          04. 获取删除指定记录
+     * @api {get} api/svn/remove          04. 获取删除指定记录（限管理员）
      *
      * @apiDescription 需要token身份
      * @apiVersion 1.0.0
@@ -145,7 +145,7 @@ class SVNController extends AbstractController
      */
     public function remove()
     {
-        User::auth();
+        User::auth('admin');
         $id = Request::input('id');
         if (!Base::isNumber($id)) {
             return Base::retError('非法id');
@@ -219,12 +219,12 @@ class SVNController extends AbstractController
     public function key()
     {
         $user = User::auth();
-        return Base::retSuccess('success', Base::md52($user->password, 'svn'));
+        return Base::retSuccess('success', SVN::calculate_key($user->password));
     }
 
 
     /**
-     * @api {get} api/svn/update_info          08. 手动更新仓库信息
+     * @api {get} api/svn/update_info          08. 手动更新仓库信息（限管理员）
      *
      * @apiDescription 需要token身份
      * @apiVersion 1.0.0
@@ -237,7 +237,7 @@ class SVNController extends AbstractController
      */
     public function update_info()
     {
-        User::auth();
+        User::auth('admin');
         SVN::update_info();
         return Base::retSuccess("ok");
     }

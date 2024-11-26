@@ -6,10 +6,11 @@
                 <div class="file-nav">
                     <h1>{{$L('SVN仓库')}}</h1>
                 </div>
-                <div class="file-add">
-                    <Button shape="circle" icon="md-refresh" @click="RefreshRepoList"></Button>
+                <div v-if="userIsAdmin" class="file-add">
+                    <Button shape="circle" icon="md-refresh" @click="UpdateInfo"></Button>
                 </div>
             </div>
+            <div class="repo-update-time">信息更新时间：{{ GetUpdateDate() }}</div>
             <ul class="dashboard-block">
                 <li v-for="repo in RepoList" :key="repo.id" @click="SelectRepo(repo.id)">
                     <div class="block-svn-name">{{ repo.name }}</div>
@@ -24,7 +25,7 @@
                 </div>
                 <ul class="dashboard-ul">
                     <li @click="CopyText(userInfo.email)">
-                        <div class="item-title">
+                        <div class="item-title svn">
                             登录账户 &nbsp;&nbsp;
                             <span>{{ userInfo.email }}</span> 
                         </div>
@@ -34,7 +35,7 @@
                         </div>
                     </li>
                     <li @click="CopySecretKey">
-                        <div class="item-title">
+                        <div class="item-title svn">
                             登录密钥 &nbsp;&nbsp;
                             <span class="start">{{ SecretKey ? SecretKey : "********" }}</span> 
                         </div>
@@ -47,7 +48,7 @@
                 <div class="dashboard-title">仓库信息</div>
                 <ul v-if="RepoSelected != undefined" class="dashboard-ul">
                     <li @click="CopyText(RepoSelected['url_wan'])">
-                        <div class="item-title">
+                        <div class="item-title svn">
                             仓库URL &nbsp;&nbsp;
                             <span>{{ RepoSelected['url_wan'] }}</span> 
                         </div>
@@ -57,7 +58,7 @@
                         </div>
                     </li>
                     <li @click="CopyText(RepoSelected['url_lan'])">
-                        <div class="item-title">
+                        <div class="item-title svn">
                             内网URL &nbsp;&nbsp;
                             <span>{{ RepoSelected['url_lan'] }}</span> 
                         </div>
@@ -67,20 +68,20 @@
                         </div>
                     </li>
                     <li>
-                        <div class="item-title">
+                        <div class="item-title svn">
                             最近修改者 &nbsp;&nbsp;
-                            <span>{{ RepoSelected['last_changed_author'] }}</span> 
+                            <span class="start">{{ RepoSelected['last_changed_author'] }}</span> 
                         </div>
                     </li>
                     <li>
-                        <div class="item-title">
+                        <div class="item-title svn">
                             最近修改时间 &nbsp;&nbsp;
-                            <span>{{ RepoSelected['last_changed_date'] }}</span> 
+                            <span class="start">{{ RepoSelected['last_changed_date'] }}</span> 
                         </div>
                     </li>
                 </ul>
                 <ul v-else class="dashboard-ul">
-                    <div style="color: gray; font-size: small;">选择仓库以显示信息</div>
+                    <div class="repo-select-tips">选择仓库以显示信息</div>
                 </ul>
                 <div class="dashboard-title">仓库日志</div>
                 <ul v-if="RepoSelected != undefined" class="dashboard-ul">
@@ -100,7 +101,7 @@
                     </div>
                 </ul>
                 <ul v-else class="dashboard-ul">
-                    <div style="color: gray; font-size: small;">选择仓库以获取日志</div>
+                    <div class="repo-select-tips">选择仓库以获取日志</div>
                 </ul>
             </div>
         </div>
@@ -117,11 +118,23 @@
 .block-title {
     line-height: 2em;
 }
+
 @media only screen and (max-width: 767px){
-    .item-title>span {
+    .item-title.svn>span {
         display: block !important;
     }
 }
+
+.repo-update-time {
+    margin-top: -30px;
+    color: darkgray;
+}
+
+.repo-select-tips {
+    color: darkgray;
+    font-size: small;
+}
+
 </style>
 
 <script>
@@ -211,6 +224,23 @@ export default {
                     $A.modalError(msg);
                 });
             }
+        },
+
+        UpdateInfo() {
+            this.$store.dispatch("call", {
+                url: 'svn/update_info'
+            }).then(_ => {
+                $A.noticeSuccess("成功");
+            }).catch(({msg}) => {
+                $A.modalError(msg);
+            });
+        },
+
+        GetUpdateDate() {
+            if (this.RepoList.length == 0)
+                return "未添加仓库";
+            let info_update_timestamps = this.RepoList[0]['info_update_timestamps'];
+            return (new Date(info_update_timestamps * 1000)).toLocaleString();
         }
     }
 }
