@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Module\Base;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class SVN extends AbstractModel
 {
@@ -30,7 +30,7 @@ class SVN extends AbstractModel
      */
     public static function calculate_key($passwd_in_db)
     {
-	return Base::md52($passwd_in_db, 'svn');
+        return Base::md52($passwd_in_db, 'svn');
     }
 
     /**
@@ -56,8 +56,16 @@ class SVN extends AbstractModel
 
             // 最近修改的作者
             $svn->last_changed_author = '';
-            if (preg_match('/Last Changed Author: (.+)/', $output, $matchs))
-                $svn->last_changed_author = $matchs[1];
+            if (preg_match('/Last Changed Author: (.+)/', $output, $matchs)) {
+                $author = $matchs[1];
+                if (Base::isEmail($author)) {
+                    $user = User::whereEmail($author);
+                    if ($user) {
+                        $author = $user->nickname;
+                    }
+                }
+                $svn->last_changed_author = $author;
+            }
 
             // 最近更改日期
             $svn->last_changed_date = '';
