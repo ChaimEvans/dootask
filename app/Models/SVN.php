@@ -59,7 +59,7 @@ class SVN extends AbstractModel
             if (preg_match('/Last Changed Author: (.+)/', $output, $matchs)) {
                 $author = $matchs[1];
                 if (Base::isEmail($author)) {
-                    $user = User::whereEmail($author);
+                    $user = User::whereEmail($author)->first();
                     if ($user) {
                         $author = $user->nickname;
                     }
